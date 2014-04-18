@@ -2,10 +2,11 @@
 
 from argparse import ArgumentParser
 from jinja2 import Environment, FileSystemLoader
-from chqpoint import Analysis
+import os
 from xhtml2pdf.pisa import CreatePDF
-from parsers import flagstatparser
 
+from chqpoint import Analysis
+from parsers import flagstatparser
 
 # This maps each output file name to its parser module
 # The key is the output 'name' in the chqpoint json
@@ -16,6 +17,8 @@ parsers = {
 
 
 class ReportMaker:
+
+    TEMPLATEDIR = os.path.join(os.path.dirname(__file__), 'templates')
 
     def __init__( self, analysisroot, analysismap ):
 
@@ -49,7 +52,7 @@ class ReportMaker:
 
     def renderhtmltext( self, templatefile ):
 
-        templateLoader = FileSystemLoader( searchpath=["templates", "/"] )
+        templateLoader = FileSystemLoader( searchpath=[self.TEMPLATEDIR, "/"] )
         templateEnv = Environment( loader=templateLoader )
         template = templateEnv.get_template( templatefile )
         outputText = template.render( self.results )

@@ -1,0 +1,10 @@
+## net.sf.picard.metrics.StringHeader
+# net.sf.picard.analysis.CollectGcBiasMetrics REFERENCE_SEQUENCE=/srv/gs1/projects/scg/Resources/GATK/hg19/ucsc.hg19.fasta INPUT=/srv/gsfs0/projects/gbsc/benchmark/giab/NA12878.clia/hugeseq-1.3/hc2/manual-QC/SAMPLE.bam OUTPUT=/srv/gsfs0/projects/gbsc/benchmark/giab/NA12878.clia/hugeseq-1.3/hc2/manual-QC/picard/CollectGcBiasMetrics.out CHART_OUTPUT=/srv/gsfs0/projects/gbsc/benchmark/giab/NA12878.clia/hugeseq-1.3/hc2/manual-QC/picard/CollectGcBiasMetrics.pdf SUMMARY_OUTPUT=/srv/gsfs0/projects/gbsc/benchmark/giab/NA12878.clia/hugeseq-1.3/hc2/manual-QC/picard/CollectGcBiasMetrics.summary    WINDOW_SIZE=100 MINIMUM_GENOME_FRACTION=1.0E-5 ASSUME_SORTED=false IS_BISULFITE_SEQUENCED=false VERBOSITY=INFO QUIET=false VALIDATION_STRINGENCY=STRICT COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false
+## net.sf.picard.metrics.StringHeader
+# Started on: Tue Apr 01 12:41:28 PDT 2014
+
+## METRICS CLASS	net.sf.picard.analysis.GcBiasSummaryMetrics
+WINDOW_SIZE	TOTAL_CLUSTERS	ALIGNED_READS	AT_DROPOUT	GC_DROPOUT
+100	666919646	1322792997	2.17006	4.185167
+
+
