@@ -3,8 +3,13 @@
        {
 	   "name": "flagstat",
 	   "type": "file",
-	   "relativepath": "flagstat.txt"
-	     }
-      ]
+	   "relativepath": "samtools/flagstat.txt"
+	     },
+    {
+	"name": "fastqc_duplication_levels",
+	"type": "file",
+	"relativepath": "fastqc/Images/duplication_levels.png"
+    }
+]
 }
 

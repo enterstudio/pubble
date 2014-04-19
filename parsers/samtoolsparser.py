@@ -2,7 +2,7 @@
 import re
 from argparse import ArgumentParser
 
-def parse(filename):
+def flagstat(filename):
     with open(filename) as f:
         text = f.read()
     
@@ -24,25 +24,20 @@ def parse(filename):
     if not m:
         raise Exception('regex did not match')
 
-    return m.groupdict()
+    results = m.groupdict()
+    imagefile = None
+
+    return (results, imagefile)
 
 if __name__=='__main__':
     parser = ArgumentParser()
     parser.add_argument('filename')
     args = parser.parse_args()
-    results = flagstatparser(args.filename)
+    (results, imagefile) = flagstatparser(args.filename)
 
-    print results
+    if imagefile:
+        print imagefile
 
+    if results:
+        print results
 
-# 4198456 + 0 in total (QC-passed reads + QC-failed reads) 
-# 0 + 0 duplicates 
-# 4022089 + 0 mapped (95.80%:-nan%) 
-# 4198456 + 0 paired in sequencing
-# 2099228 + 0 read1 
-# 2099228 + 0 read2 
-# 3796446 + 0 properly paired (90.42%:-nan%)
-# 4013692 + 0 with itself and mate mapped
-# 8397 + 0 singletons (0.20%:-nan%)
-# 167574 + 0 with mate mapped to a different chr
-# 72008 + 0 with mate mapped to a different chr (mapQ>=5)
