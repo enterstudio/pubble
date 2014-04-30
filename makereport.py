@@ -6,13 +6,14 @@ import os
 from xhtml2pdf.pisa import CreatePDF
 
 from chqpoint import Analysis
-from parsers import flagstatparser
+from parsers import flagstatparser, variantevalparser
 
 # This maps each output file name to its parser module
 # The key is the output 'name' in the chqpoint json
 # file used to import the analysis
 parsers = {
-    'flagstat': flagstatparser
+    'flagstat': flagstatparser,
+    'varianteval': variantevalparser,
 }
 
 
@@ -20,14 +21,14 @@ class ReportMaker:
 
     TEMPLATEDIR = os.path.join(os.path.dirname(__file__), 'templates')
 
-    def __init__( self, analysisroot, analysismap ):
+    def __init__(self, analysisroot, analysismap):
 
         self.results = {}
-        for resultsfile in self.getresultsfiles( analysisroot, analysismap ):
-            parser = parsers[ resultsfile[ 'name' ]]
-            self.results.update( parser.parse(( resultsfile[ 'path' ] )))
+        for resultsfile in self.getresultsfiles(analysisroot, analysismap):
+            parser = parsers[resultsfile['name']]
+            self.results.update(parser.parse((resultsfile['path'])))
 
-    def getresultsfiles( self, analysisroot, analysismap ):
+    def getresultsfiles(self, analysisroot, analysismap):
 
         analysis = Analysis.new(
             path=analysisroot, 
@@ -36,38 +37,38 @@ class ReportMaker:
 
         return analysis.getoutputs()
 
-    def renderpdf(self, templatefile, destfile):
+#    def renderpdf(self, templatefile, destfile):
 
-        html = self.renderhtmltext(templatefile)
-        with open(destfile,'w') as f:
-            CreatePDF(
-                src=html,
-                dest=f
-            )
+#        html = self.renderhtmltext(templatefile)
+#        with open(destfile,'w') as f:
+#            CreatePDF(
+#                src=html,
+#                dest=f
+#            )
 
-    def renderhtml( self, templatefile, destfile ):
+    def renderhtml(self, templatefile, destfile):
 
-        with open( destfile, 'w' ) as f:
-            f.write( self.renderhtmltext( templatefile ) )
+        with open(destfile, 'w') as f:
+            f.write(self.renderhtmltext(templatefile))
 
-    def renderhtmltext( self, templatefile ):
+    def renderhtmltext(self, templatefile):
 
-        templateLoader = FileSystemLoader( searchpath=[self.TEMPLATEDIR, "/"] )
-        templateEnv = Environment( loader=templateLoader )
-        template = templateEnv.get_template( templatefile )
-        outputText = template.render( self.results )
+        templateLoader = FileSystemLoader(searchpath=[self.TEMPLATEDIR, "/"])
+        templateEnv = Environment(loader=templateLoader)
+        template = templateEnv.get_template(templatefile)
+        outputText = template.render(self.results)
         return outputText
 
         
 if __name__=='__main__':
 
     parser = ArgumentParser()
-    parser.add_argument( '--analysisroot' )
-    parser.add_argument( '--chqpointmap' )
-    parser.add_argument( '--htmltemplate' )
-    parser.add_argument( '--htmldestfile' )
-    parser.add_argument( '--pdftemplate' )
-    parser.add_argument( '--pdfdestfile' )
+    parser.add_argument('--analysisroot')
+    parser.add_argument('--chqpointmap')
+    parser.add_argument('--htmltemplate')
+    parser.add_argument('--htmldestfile')
+    parser.add_argument('--pdftemplate')
+    parser.add_argument('--pdfdestfile')
 
     args = parser.parse_args()
 
@@ -76,6 +77,6 @@ if __name__=='__main__':
         args.chqpointmap
     )
 
-    r.renderhtml( args.htmltemplate, args.htmldestfile )
-    r.renderpdf( args.pdftemplate, args.pdfdestfile )
+    r.renderhtml(args.htmltemplate, args.htmldestfile)
+#    r.renderpdf(args.pdftemplate, args.pdfdestfile)
 

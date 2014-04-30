@@ -1,10 +1,15 @@
 {
 "outputs": [
-       {
+	   {
 	   "name": "flagstat",
 	   "type": "file",
-	   "relativepath": "flagstat.txt"
-	     }
+	   "relativepath": "samtools/flagstat.txt"
+	   },
+	   {
+	   "name": "varianteval",
+	   "type": "file",
+	   "relativepath": "gatk/with_dbsnp_138_variant_eval.vcf"
+	   }
       ]
 }
 

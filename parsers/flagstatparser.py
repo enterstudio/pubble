@@ -3,6 +3,7 @@ import re
 from argparse import ArgumentParser
 
 def parse(filename):
+
     with open(filename) as f:
         text = f.read()
     
@@ -17,20 +18,20 @@ def parse(filename):
               +'(?P<singletons_pf>[0-9]+) \+ (?P<singletons_fail>[0-9]+) singletons.*\n'\
               +'(?P<different_chr_pf>[0-9]+) \+ (?P<different_chr_fail>[0-9]+) with mate .*\n'\
               +'(?P<different_chr_gt5_pf>[0-9]+) \+ (?P<different_chr_gt5_fail>[0-9]+) with mate.*\n'
-              
 
     m = re.match(pattern, text)
 
     if not m:
         raise Exception('regex did not match')
 
-    return m.groupdict()
+    results = {'flagstat': m.groupdict()}
+    return results
 
 if __name__=='__main__':
     parser = ArgumentParser()
     parser.add_argument('filename')
     args = parser.parse_args()
-    results = flagstatparser(args.filename)
+    results = parse(args.filename)
 
     print results
 
