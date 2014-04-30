@@ -9,7 +9,12 @@
 	   "name": "varianteval",
 	   "type": "file",
 	   "relativepath": "gatk/with_dbsnp_138_variant_eval.vcf"
-	   }
-      ]
+	   },
+    	   {
+	   "name": "fastqc_duplication_levels",
+	   "type": "file",
+	   "relativepath": "fastqc/Images/duplication_levels.png"
+    	   }
+	   ]
 }
 

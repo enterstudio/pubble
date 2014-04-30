@@ -3,7 +3,7 @@ import re
 from argparse import ArgumentParser
 
 
-def parse(filename):
+def varianteval(filename):
 
 
     resultstables = {}
@@ -41,8 +41,9 @@ def parse(filename):
                     'header': tableheader,
                     'rows': rows
                     }
-            
-    return {'varianteval': resultstables}
+    results = {'varianteval': resultstables}
+    imagefiles = None
+    return (results, imagefiles)
 
 if __name__=='__main__':
     parser = ArgumentParser()

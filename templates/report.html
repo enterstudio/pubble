@@ -4,20 +4,13 @@
 <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-<ul>
 {{ flagstat.mapped_pf }}
 {% for name, table in varianteval.iteritems() %}
 {{ name }}: {{ table.description }}
 <table>
-<tr>
-{% for colname in table.header %}
-<th>
-{{ colname }}
-</th>
-{% endfor %}
-</tr>
+<tr>{% for colname in table.header %}<th>{{ colname }}</th>{% endfor %}</tr>
 </table>
 {% endfor %}
-</ul>
+<img src="{{ imagefiles['fastqc_duplication_levels'] }}">
 </body>
 </html>

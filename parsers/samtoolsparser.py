@@ -2,7 +2,7 @@
 import re
 from argparse import ArgumentParser
 
-def parse(filename):
+def flagstat(filename):
 
     with open(filename) as f:
         text = f.read()
@@ -25,16 +25,21 @@ def parse(filename):
         raise Exception('regex did not match')
 
     results = {'flagstat': m.groupdict()}
-    return results
+    imagefile = None
+
+    return (results, imagefile)
 
 if __name__=='__main__':
     parser = ArgumentParser()
     parser.add_argument('filename')
     args = parser.parse_args()
-    results = parse(args.filename)
+    (results, imagefile) = parse(args.filename)
 
-    print results
+    if imagefile:
+        print imagefile
 
+    if results:
+        print results
 
 # 4198456 + 0 in total (QC-passed reads + QC-failed reads) 
 # 0 + 0 duplicates 
