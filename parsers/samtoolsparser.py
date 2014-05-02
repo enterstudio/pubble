@@ -33,7 +33,7 @@ if __name__=='__main__':
     parser = ArgumentParser()
     parser.add_argument('filename')
     args = parser.parse_args()
-    (results, imagefile) = parse(args.filename)
+    (results, imagefile) = flagstat(args.filename)
 
     if imagefile:
         print imagefile

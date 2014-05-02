@@ -4,12 +4,12 @@ from argparse import ArgumentParser
 from jinja2 import Environment, FileSystemLoader
 import os
 import re
-from shutil import copy, rmtree
+from shutil import copy, rmtree, move
+import subprocess
 import tempfile
-from xhtml2pdf.pisa import CreatePDF
 
 from chqpoint import Analysis
-from parsers import samtoolsparser, gatkparser, fastqcparser
+from parsers import samtoolsparser, gatkparser, fastqcparser, picardparser
 
 # This dict maps each output file name to its parser module
 # The key is the output 'name' in the chqpoint json
@@ -19,7 +19,25 @@ from parsers import samtoolsparser, gatkparser, fastqcparser
 parsers = {
     'flagstat': samtoolsparser.flagstat,
     'varianteval': gatkparser.varianteval,
-    'fastqc_duplication_levels': fastqcparser.duplication_levels
+    'fastqc_duplication_levels': fastqcparser.duplication_levels,
+    'fastqc_data': fastqcparser.fastqc_data,
+    'fastqc_duplication_levels': fastqcparser.duplication_levels,
+    'fastqc_kmer_profiles': fastqcparser.kmer_profiles,
+    'fastqc_per_base_gc_content': fastqcparser.per_base_gc_content,
+    'fastqc_per_base_n_content': fastqcparser.per_base_n_content,
+    'fastqc_per_base_quality': fastqcparser.per_base_quality,
+    'fastqc_per_base_sequence_content': fastqcparser.per_base_sequence_content,
+    'fastqc_per_sequence_gc_content': fastqcparser.per_sequence_gc_content,
+    'fastqc_per_sequence_quality': fastqcparser.per_sequence_quality,
+    'fastqc_sequence_length_distribution': fastqcparser.sequence_length_distribution,
+    'picard_alignmentsummarymetrics': picardparser.alignmentsummarymetrics,
+    'picard_gcbiasmetrics': picardparser.gcbiasmetrics,
+    'picard_gcdropoutmetrics': picardparser.gcdropoutmetrics,
+    'picard_insertsizemetrics': picardparser.insertsizemetrics,
+    'picard_gcbiasmetricsimage': picardparser.imagenoop,
+    'picard_insertsizemetricsimage': picardparser.imagenoop,
+    'picard_meanqualitybycycleimage': picardparser.imagenoop,
+    'picard_qualityscoredistributionimage': picardparser.imagenoop,
 }
 
 
@@ -50,30 +68,31 @@ class ReportMaker:
 
         return analysis.getoutputs()
 
-    def renderpdf(self, templatefile, destfile):
+    def renderpdf(self, templatefile, destfile, dbg):
 
         tempdir = tempfile.mkdtemp()
-        htmlfile = os.path.join(tempdir, 'temp.html')
-        self.renderhtml(templatefile, htmlfile)
+        if dbg:
+            print "Intermediate files for generating PDF will be preserved in %s" % tempdir
 
-        with open(htmlfile) as src:
-            with open(destfile,'w') as dest:
-                CreatePDF(
-                    src=src,
-                    dest=dest,
-                    path=tempdir
-            )
+        tempbasename = '_temp_'
+        latexfile = os.path.join(tempdir, tempbasename+'.tex')
+        with open(latexfile, 'w') as f:
+            f.write(self.rendertext(templatefile))
 
-        rmtree(tempdir)
+        cmd = 'pdflatex -output-directory=%s %s' % (tempdir, latexfile)
+        subprocess.call(cmd, shell=True)
+        move(os.path.join(tempdir, tempbasename+'.pdf'), destfile)
+        if not dbg:
+            rmtree(tempdir)
 
     def renderhtml(self, templatefile, destfile):
 
         self.handleimagefiles(destfile)
 
         with open(destfile, 'w') as f:
-            f.write(self.renderhtmltext(templatefile))
+            f.write(self.rendertext(templatefile))
 
-    def renderhtmltext(self, templatefile):
+    def rendertext(self, templatefile):
 
         templateLoader = FileSystemLoader(searchpath=[self.TEMPLATEDIR, "/"])
         templateEnv = Environment(loader=templateLoader)
@@ -87,7 +106,6 @@ class ReportMaker:
         return prefix + '_files'
 
     def handleimagefiles(self, destfile):
-
         self.results['imagefiles'] = {}
 
         destdir = self.supportingfilesdir(destfile)
@@ -109,7 +127,7 @@ if __name__=='__main__':
     parser.add_argument('--htmldestfile')
     parser.add_argument('--pdftemplate')
     parser.add_argument('--pdfdestfile')
-
+    parser.add_argument('--debug', action='store_true')
     args = parser.parse_args()
 
     r = ReportMaker(
@@ -118,4 +136,4 @@ if __name__=='__main__':
     )
 
     r.renderhtml(args.htmltemplate, args.htmldestfile)
-#    r.renderpdf(args.pdftemplate, args.pdfdestfile)
+    r.renderpdf(args.pdftemplate, args.pdfdestfile, args.debug)

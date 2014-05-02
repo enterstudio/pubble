@@ -1,20 +1,105 @@
 {
-"outputs": [
-	   {
-	   "name": "flagstat",
-	   "type": "file",
-	   "relativepath": "samtools/flagstat.txt"
-	   },
-	   {
-	   "name": "varianteval",
-	   "type": "file",
-	   "relativepath": "gatk/with_dbsnp_138_variant_eval.vcf"
-	   },
-    	   {
-	   "name": "fastqc_duplication_levels",
-	   "type": "file",
-	   "relativepath": "fastqc/Images/duplication_levels.png"
-    	   }
-	   ]
+    "outputs": 
+    [
+	{
+	    "name": "flagstat",
+	    "type": "file",
+	    "relativepath": "samtools/flagstat.txt"
+	},
+	{
+	    "name": "varianteval",
+	    "type": "file",
+	    "relativepath": "gatk/with_dbsnp_138_variant_eval.vcf"
+	},
+	{
+	    "name": "fastqc_data",
+	    "type": "file",
+	    "relativepath": "fastqc/fastqc_data.txt"
+	},
+    	{
+	    "name": "fastqc_duplication_levels",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/duplication_levels.png"
+    	},
+	{
+	    "name": "fastqc_kmer_profiles",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/kmer_profiles.png"
+	},
+	{
+	    "name": "fastqc_per_base_gc_content",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/per_base_gc_content.png"
+	},
+	{
+	    "name": "fastqc_per_base_n_content",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/per_base_n_content.png"
+	},
+	{
+	    "name": "fastqc_per_base_quality",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/per_base_quality.png"
+	},
+	{
+	    "name": "fastqc_per_base_sequence_content",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/per_base_sequence_content.png"
+	},
+	{
+	    "name": "fastqc_per_sequence_gc_content",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/per_sequence_gc_content.png"
+	},
+	{
+	    "name": "fastqc_per_sequence_quality",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/per_sequence_quality.png"
+	},
+	{
+	    "name": "fastqc_sequence_length_distribution",
+	    "type": "file",
+	    "relativepath": "fastqc/Images/sequence_length_distribution.png"
+	},
+	{
+	    "name": "picard_alignmentsummarymetrics",
+	    "type": "file",
+	    "relativepath": "picard/CollectAlignmentSummaryMetrics.out"
+	},
+	{
+	    "name": "picard_gcbiasmetrics",
+	    "type": "file",
+	    "relativepath": "picard/CollectGcBiasMetrics.out"
+	},
+	{
+	    "name": "picard_gcdropoutmetrics",
+	    "type": "file",
+	    "relativepath": "picard/CollectGcBiasMetrics.summary"
+	},
+	{
+	    "name": "picard_insertsizemetrics",
+	    "type": "file",
+	    "relativepath": "picard/CollectInsertSizeMetrics.out"
+	},
+	{
+	    "name": "picard_gcbiasmetricsimage",
+	    "type": "file",
+	    "relativepath": "picard/CollectGcBiasMetrics.pdf"
+	},
+	{
+	    "name": "picard_insertsizemetricsimage",
+	    "type": "file",
+	    "relativepath": "picard/CollectInsertSizeMetrics.pdf"
+	},
+	{
+	    "name": "picard_meanqualitybycycleimage",
+	    "type": "file",
+	    "relativepath": "picard/MeanQualityByCycle.pdf"
+	},
+	{
+	    "name": "picard_qualityscoredistributionimage",
+	    "type": "file",
+	    "relativepath": "picard/QualityScoreDistribution.pdf"
+	}
+    ]
 }
-
