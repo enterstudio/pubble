@@ -1,18 +1,64 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,12pt]{scrartcl}
 \usepackage{graphicx}
 \usepackage{float}
 \begin{document}
 
-\title{Genome QC Report}
+\title{Sequencing, Mapping, and Variant Calling QC Report}
+\subtitle{Case ID: {{ caseid }}\\*Sequence ID: {{illuminaid}}{{ '}' }}
 \date{}
 \author{}
 \maketitle
 
-\section*{Summary}
-\subsection*{Reads metrics}
+\newpage
 
-\begin{quote}
+\section*{Summary metrics}
+
+\subsection*{Raw quality}
+
+{% if imagefiles['picard_insertsizemetricsimage'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['picard_insertsizemetricsimage'] }}{{ '}' }}
+\captionof{figure}{Insert size}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+\bigskip
+
+{% if picard_insertsizemetrics %}
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Insert Size Metrics}\label{tab:title}
+\bigskip
 \begin{tiny}
+\begin{tabular}{l{% for row in picard_insertsizemetrics.rows %}l{% endfor %}{{ '}' }}
+{% for i in range(picard_insertsizemetrics.header|count) %}
+\verb|{{ picard_insertsizemetrics.header[i] }}|{% for row in picard_insertsizemetrics.rows %}&\verb|{{ row[i] }}|{% endfor %}\\{% endfor %}                                                                \end{tabular}
+\end{tiny}
+\end{minipage}
+{% endif %}
+
+\bigskip
+
+{% if imagefiles['fastqc_per_base_quality'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_quality'] }}{{ '}' }}
+\captionof{figure}{Read quality}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+\newpage
+
+\subsection*{Alignment quality}
+
+{% if flagstat %}
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Mapped read metrics} \label{tab:title} 
+\begin{small}
 \begin{tabular}{ll}
 total&{{ flagstat.total_pf }}\\
 duplicates&{{ flagstat.duplicates_pf }}\\
@@ -26,133 +72,235 @@ singletons&{{ flagstat.singletons_pf }}\\
 with mate mapped to a different chr&{{ flagstat.different_chr_pf }}\\
 with mate mapped to a different chr (mapQ\textgreater=5)&{{ flagstat.different_chr_gt5_pf }}\\
 \end{tabular}
-\end{tiny}
-\end{quote}
+\end{small}\par
+\end{minipage}
+{% endif %}
 
-\begin{figure}[ht!]
+\newpage
+\subsection*{Coverage}
+
+{% if imagefiles['coverage_dcm_exons_image'] %}
+\begin{minipage}{\linewidth}
 \centering
-\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_quality'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\includegraphics[width=120mm]{{ '{' }}{{ imagefiles['coverage_dcm_exons_image'] }}{{ '}' }}
+\captionof{figure}{DCM gene coverage}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
+\bigskip
 
-\subsection*{Insert size metrics}
+{% if imagefiles['coverage_acmg_exons_image'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=120mm]{{ '{' }}{{ imagefiles['coverage_acmg_exons_image'] }}{{ '}' }}
+\captionof{figure}{ACMG gene coverage}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
-\noindent
-\makebox[\linewidth]{
-  \includegraphics[width=90mm]{{ '{' }}{{ imagefiles['picard_insertsizemetricsimage'] }}{{ '}' }}
-  }
+\newpage
 
-\begin{quote}
+\subsection*{Variant quality}
+
+{% if varianteval_TiTvVariantEvaluator %}
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Variant Ti/Tv metrics} \label{tab:title}
+\bigskip
+\begin{small}
+\begin{tabular}{llll}
+VariantType & nTi & nTv & TiTvRatio \\
+{{ varianteval_TiTvVariantEvaluator.variantType }} & {{ varianteval_TiTvVariantEvaluator.nTi }} & {{ varianteval_TiTvVariantEvaluator.nTv }} & {{ varianteval_TiTvVariantEvaluator.TiTvRatio }} \\
+\end{tabular}
+\end{small}
+\end{minipage}
+{% endif %}
+
+\bigskip
+
+{% if varianteval_CountVariants %}
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Variant count metrics} \label{tab:title}
+\bigskip
 \begin{tiny}
-\begin{tabular}{l{% for row in picard_insertsizemetrics.rows %}l{% endfor %}{{ '}' }}
-{% for i in range(picard_insertsizemetrics.header|count) %}
-\verb|{{ picard_insertsizemetrics.header[i] }}|{% for row in picard_insertsizemetrics.rows %}&\verb|{{ row[i] }}|{% endfor %}\\{% endfor %}
+\begin{tabular}{{ '{' }}{% for i in range(varianteval_CountVariants.header|count) %}l{% endfor %}{{ '}' }}
+\verb|{{ varianteval_CountVariants.header|join('|&\\verb|') }}|\\
+{% for row in varianteval_CountVariants.rows %}\verb|{{ row|join('|&\\verb|') }}|\\
+{% endfor %}
 \end{tabular}
 \end{tiny}
-\end{quote}
+\end{minipage}
+{% endif %}
 
+\bigskip
 
-\section*{Details}
+\newpage
 
-\subsection*{Fastqc}
+\section*{Detailed metrics}
 
-\begin{figure}[ht!]
+\subsection*{Raw quality}
+
+{% if imagefiles['fastqc_duplication_levels'] %}
+\begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_duplication_levels'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\captionof{figure}{Duplication levels}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
-\begin{figure}[ht!]
+\bigskip
+
+{% if imagefiles['fastqc_kmer_profiles'] %}
+\begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_kmer_profiles'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\captionof{figure}{Kmer profiles}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_gc_content'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\bigskip
 
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_n_content'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
-
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_sequence_content'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
-
-\begin{figure}[ht!]
+{% if imagefiles['fastqc_per_sequence_gc_content'] %}
+\begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_sequence_gc_content'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\captionof{figure}{Per-sequence GC content}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
-\begin{figure}[ht!]
+\bigskip
+
+{% if imagefiles['fastqc_per_sequence_quality'] %}
+\begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_sequence_quality'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\captionof{figure}{Per-sequence quality score}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
-\begin{figure}[ht!]
+\bigskip
+
+
+
+{% if imagefiles['picard_meanqualitybycycleimage'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['picard_meanqualitybycycleimage'] }}{{ '}' }}
+\captionof{figure}{Mean quality by cycle}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+\bigskip
+
+{% if imagefiles['picard_qualityscoredistributionimage'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['picard_qualityscoredistributionimage'] }}{{ '}' }}
+\captionof{figure}{Quality score distribution}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+
+\newpage
+\subsection*{Alignment quality}
+
+\newpage
+\subsection*{Coverage}
+
+{% if imagefiles['coverage_MYLK2_image'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['coverage_MYLK2_image'] }}{{ '}' }}
+\captionof{figure}{MYLK2 coverage}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+\newpage
+\subsection*{Variant quality}
+
+
+{% if imagefiles['fastqc_per_base_gc_content'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_gc_content'] }}{{ '}' }}
+\captionof{figure}{Per-base GC content}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+\bigskip
+
+{% if imagefiles['fastqc_per_base_n_content'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_n_content'] }}{{ '}' }}
+\captionof{figure}{Per-base N content}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+\bigskip
+
+{% if imagefiles['fastqc_per_base_sequence_content'] %}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_per_base_sequence_content'] }}{{ '}' }}
+\captionof{figure}{Per-base sequence content}
+\label{fig:title}
+\end{minipage}
+{% endif %}
+
+\bigskip
+
+{% if imagefiles['fastqc_sequence_length_distribution'] %}
+\begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=90mm]{{ '{' }}{{ imagefiles['fastqc_sequence_length_distribution'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\captionof{figure}{Sequence length distribution}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
-\clearpage
-\subsection*{Picard GC bias metrics}
+\bigskip
 
-\begin{figure}[ht!]
+{% if imagefiles['picard_gcbiasmetricsimage'] %}
+\begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=90mm]{{ '{' }}{{ imagefiles['picard_gcbiasmetricsimage'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
+\captionof{figure}{GC bias metrics}
+\label{fig:title}
+\end{minipage}
+{% endif %}
 
-\subsubsection*{GC / AT dropout rate}
+\bigskip
 
-\begin{tiny}
+{% if imagefiles['picard_gcdropoutmetrics'] %}
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{Mapped read metrics} \label{tab:title} 
+\bigskip
+\begin{small}
 \begin{tabular}{{ '{' }}{% for i in range(picard_gcdropoutmetrics.header|count) %}l{% endfor %}{{ '}' }}
 \verb|{{ picard_gcdropoutmetrics.header|join('|&\\verb|') }}|\\
 {% for row in picard_gcdropoutmetrics.rows %}\verb|{{ row|join('|&\\verb|') }}|\\
 {% endfor %}
 \end{tabular}
-\end{tiny}
+\par
+\bigskip
+AT\_DROPOUT is the percent of total reads that should have mapped to GC\textless50\% regions but mapped elsewhere. GC\_DROPOUT is the corresponding value for GC\textgreater50\% regions.
+\end{small}
+\end{minipage}
+{% endif %}
 
-
-\bigskip\noindent AT\_DROPOUT is the percent of total reads that should have mapped to GC\textless50\% regions but mapped elsewhere. GC\_DROPOUT is the corresponding value for GC\textgreater50\% regions.
-
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['picard_meanqualitybycycleimage'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
-
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=90mm]{{ '{' }}{{ imagefiles['picard_qualityscoredistributionimage'] }}{{ '}' }}
-\label{overflow}
-\end{figure}
-
-\clearpage
-
-\section*{Variant metrics}
-
-{% for name, table in varianteval.iteritems() %}
-\subsection*{{ '{' }}{{ name }}{{ '}' }}
-\subsubsection*{{ '{' }}{{ table.description }}{{ '}' }}
-\begin{tiny}
-\begin{tabular}{{ '{' }}{% for col in table.header %}l{% endfor %}{{ '}' }}
-\verb|{{ table.header|join('|&\\verb|') }}|\\
-{% for row in table.rows %}
-\verb|{{ row|join('|&\\verb|') }}|\\{% endfor %}
-\end{tabular}
-\end{tiny}
-{% endfor %}
+\bigskip
 
 \end{document}

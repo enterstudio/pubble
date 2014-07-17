@@ -4,102 +4,107 @@
 	{
 	    "name": "flagstat",
 	    "type": "file",
-	    "relativepath": "samtools/flagstat.txt"
+	    "relativepath": "flagstat.txt"
 	},
 	{
-	    "name": "varianteval",
+	    "name": "varianteval_CountVariants",
 	    "type": "file",
-	    "relativepath": "gatk/with_dbsnp_138_variant_eval.vcf"
+	    "relativepath": "variantEval_metrics.txt"
+	},
+	{
+	    "name": "varianteval_TiTvVariantEvaluator",
+	    "type": "file",
+	    "relativepath": "variantEval_metrics.txt"
 	},
 	{
 	    "name": "fastqc_data",
 	    "type": "file",
-	    "relativepath": "fastqc/fastqc_data.txt"
+	    "relativepath": "genome.recal_fastqc/fastqc_data.txt"
 	},
     	{
 	    "name": "fastqc_duplication_levels",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/duplication_levels.png"
+	    "relativepath": " genome.recal_fastqc/Images/duplication_levels.png"
     	},
 	{
 	    "name": "fastqc_kmer_profiles",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/kmer_profiles.png"
+	    "relativepath": "genome.recal_fastqc/Images/kmer_profiles.png"
 	},
 	{
 	    "name": "fastqc_per_base_gc_content",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/per_base_gc_content.png"
+	    "relativepath": "genome.recal_fastqc/Images/per_base_gc_content.png"
 	},
 	{
 	    "name": "fastqc_per_base_n_content",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/per_base_n_content.png"
+	    "relativepath": "genome.recal_fastqc/Images/per_base_n_content.png"
 	},
 	{
 	    "name": "fastqc_per_base_quality",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/per_base_quality.png"
+	    "relativepath": "genome.recal_fastqc/Images/per_base_quality.png"
 	},
 	{
 	    "name": "fastqc_per_base_sequence_content",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/per_base_sequence_content.png"
+	    "relativepath": "genome.recal_fastqc/Images/per_base_sequence_content.png"
 	},
 	{
 	    "name": "fastqc_per_sequence_gc_content",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/per_sequence_gc_content.png"
+	    "relativepath": "genome.recal_fastqc/Images/per_sequence_gc_content.png"
 	},
 	{
 	    "name": "fastqc_per_sequence_quality",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/per_sequence_quality.png"
+	    "relativepath": "genome.recal_fastqc/Images/per_sequence_quality.png"
 	},
 	{
 	    "name": "fastqc_sequence_length_distribution",
 	    "type": "file",
-	    "relativepath": "fastqc/Images/sequence_length_distribution.png"
+	    "relativepath": "genome.recal_fastqc/Images/sequence_length_distribution.png"
 	},
 	{
 	    "name": "picard_alignmentsummarymetrics",
 	    "type": "file",
-	    "relativepath": "picard/CollectAlignmentSummaryMetrics.out"
+	    "relativepath": "alnSummaryMetrics.txt"
 	},
 	{
 	    "name": "picard_gcbiasmetrics",
 	    "type": "file",
-	    "relativepath": "picard/CollectGcBiasMetrics.out"
+	    "relativepath": "gcBiasMetrics.txt"
 	},
 	{
 	    "name": "picard_gcdropoutmetrics",
 	    "type": "file",
-	    "relativepath": "picard/CollectGcBiasMetrics.summary"
+	    "relativepath": "gcBiasMetrics_summary.txt"
 	},
 	{
 	    "name": "picard_insertsizemetrics",
 	    "type": "file",
-	    "relativepath": "picard/CollectInsertSizeMetrics.out"
+	    "relativepath": "insertSizeMetrics.txt"
 	},
 	{
 	    "name": "picard_gcbiasmetricsimage",
 	    "type": "file",
-	    "relativepath": "picard/CollectGcBiasMetrics.pdf"
+	    "relativepath": ""
 	},
 	{
 	    "name": "picard_insertsizemetricsimage",
 	    "type": "file",
-	    "relativepath": "picard/CollectInsertSizeMetrics.pdf"
+	    "relativepath": "insertSizeHist.pdf"
 	},
 	{
 	    "name": "picard_meanqualitybycycleimage",
 	    "type": "file",
-	    "relativepath": "picard/MeanQualityByCycle.pdf"
+	    "relativepath": "meanQualityByCycle.pdf"
 	},
 	{
 	    "name": "picard_qualityscoredistributionimage",
 	    "type": "file",
-	    "relativepath": "picard/QualityScoreDistribution.pdf"
+	    "relativepath": "qualityScoreDistribution.pdf"
 	}
     ]
 }

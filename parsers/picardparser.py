@@ -2,11 +2,6 @@
 
 from argparse import ArgumentParser
 
-def imagenoop(filename):
-    results = None
-    image = filename
-    return (results, image)
-
 def genericparser(filename):
     resultsdata = {
         'rows': []

@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 
 from chqpoint import Analysis
-from parsers import samtoolsparser, gatkparser, fastqcparser, picardparser
+from parsers import samtoolsparser, gatkparser, fastqcparser, picardparser, common
 
 # This dict maps each output file name to its parser module
 # The key is the output 'name' in the chqpoint json
@@ -18,8 +18,8 @@ from parsers import samtoolsparser, gatkparser, fastqcparser, picardparser
 
 parsers = {
     'flagstat': samtoolsparser.flagstat,
-    'varianteval': gatkparser.varianteval,
-    'fastqc_duplication_levels': fastqcparser.duplication_levels,
+    'varianteval_CountVariants': gatkparser.varianteval_CountVariants,
+    'varianteval_TiTvVariantEvaluator': gatkparser.varianteval_TiTvVariantEvaluator,
     'fastqc_data': fastqcparser.fastqc_data,
     'fastqc_duplication_levels': fastqcparser.duplication_levels,
     'fastqc_kmer_profiles': fastqcparser.kmer_profiles,
@@ -34,10 +34,13 @@ parsers = {
     'picard_gcbiasmetrics': picardparser.gcbiasmetrics,
     'picard_gcdropoutmetrics': picardparser.gcdropoutmetrics,
     'picard_insertsizemetrics': picardparser.insertsizemetrics,
-    'picard_gcbiasmetricsimage': picardparser.imagenoop,
-    'picard_insertsizemetricsimage': picardparser.imagenoop,
-    'picard_meanqualitybycycleimage': picardparser.imagenoop,
-    'picard_qualityscoredistributionimage': picardparser.imagenoop,
+    'picard_gcbiasmetricsimage': common.imagenoop,
+    'picard_insertsizemetricsimage': common.imagenoop,
+    'picard_meanqualitybycycleimage': common.imagenoop,
+    'picard_qualityscoredistributionimage': common.imagenoop,
+    'coverage_acmg_exons_image': common.imagenoop,
+    'coverage_dcm_exons_image': common.imagenoop,
+    'coverage_MYLK2_image': common.imagenoop,
 }
 
 
@@ -49,8 +52,10 @@ class ReportMaker:
 
         self.results = {}
         self.imagefiles = {}
+        self.imagefilescopy = {} #Published copy for html
+        self.getanalysisdata(analysisroot, analysismap)
 
-        for resultsfile in self.getresultsfiles(analysisroot, analysismap):
+        for resultsfile in self.resultsfiles:
             resultsname = resultsfile['name']
             parser = parsers[resultsname]
             (results, imagefile) = parser(resultsfile['path'])
@@ -59,25 +64,27 @@ class ReportMaker:
             if imagefile:
                 self.imagefiles[resultsname] = imagefile
 
-    def getresultsfiles(self, analysisroot, analysismap):
+    def getanalysisdata(self, analysisroot, analysismap):
 
         analysis = Analysis.new(
             path=analysisroot, 
             configfile=analysismap
         )
 
-        return analysis.getoutputs()
+        self.resultsfiles = analysis.getoutputs()
+        self.metadata = analysis.getmetadata()
 
     def renderpdf(self, templatefile, destfile, dbg):
-
         tempdir = tempfile.mkdtemp()
         if dbg:
             print "Intermediate files for generating PDF will be preserved in %s" % tempdir
+            print self.results
+            print self.imagefiles
 
         tempbasename = '_temp_'
         latexfile = os.path.join(tempdir, tempbasename+'.tex')
         with open(latexfile, 'w') as f:
-            f.write(self.rendertext(templatefile))
+            f.write(self.rendertext(templatefile, self.results, self.imagefiles))
 
         cmd = 'pdflatex -output-directory=%s %s' % (tempdir, latexfile)
         subprocess.call(cmd, shell=True)
@@ -87,17 +94,23 @@ class ReportMaker:
 
     def renderhtml(self, templatefile, destfile):
 
-        self.handleimagefiles(destfile)
+        self.copyimagefiles(destfile)
 
         with open(destfile, 'w') as f:
-            f.write(self.rendertext(templatefile))
+            f.write(self.rendertext(templatefile, self.results, self.imagefilescopy))
 
-    def rendertext(self, templatefile):
+    def rendertext(self, templatefile, results, imagefiles):
 
         templateLoader = FileSystemLoader(searchpath=[self.TEMPLATEDIR, "/"])
         templateEnv = Environment(loader=templateLoader)
         template = templateEnv.get_template(templatefile)
-        outputText = template.render(self.results)
+
+        templatedict = {}
+        templatedict.update(results)
+        templatedict.update({'imagefiles': imagefiles})
+        templatedict.update(self.metadata)
+
+        outputText = template.render(templatedict)
         return outputText
 
     def supportingfilesdir(self, destfile):
@@ -105,16 +118,16 @@ class ReportMaker:
         prefix = re.sub('\.html$', '', destfile)
         return prefix + '_files'
 
-    def handleimagefiles(self, destfile):
-        self.results['imagefiles'] = {}
+    def copyimagefiles(self, destfile):
 
         destdir = self.supportingfilesdir(destfile)
         if not os.path.exists(destdir):
             os.mkdir(destdir)
 
-        for imagename in self.imagefiles:
-            imagefile = self.imagefiles[imagename]
-            self.results['imagefiles'][imagename] = os.path.join(
+        import pdb; pdb.set_trace()
+
+        for (imagename, imagefile) in self.imagefiles.iteritems():
+            self.imagefilescopy[imagename] = os.path.join(
                 destdir, os.path.basename(imagefile))
             copy(imagefile, destdir)
         
@@ -135,5 +148,16 @@ if __name__=='__main__':
         args.chqpointmap
     )
 
-    r.renderhtml(args.htmltemplate, args.htmldestfile)
-    r.renderpdf(args.pdftemplate, args.pdfdestfile, args.debug)
+    if args.pdftemplate:
+        if args.pdfdestfile:
+            pdfdestfile = args.pdfdestfile
+        else:
+            pdfdestfile = 'out.pdf'
+        r.renderpdf(args.pdftemplate, args.pdfdestfile, args.debug)
+
+    if args.htmltemplate:
+        if args.htmldestfile:
+            htmldestfile = args.htmldestfile
+        else:
+            htmldestfile = 'out.html'
+        r.renderhtml(args.htmltemplate, htmldestfile)
